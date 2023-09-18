@@ -44,6 +44,21 @@ class App(tk.Tk):
 
                 self.draw_element(x_index, y_index, cell_value)
 
+    def display_collapse(self, wavefunctioncollapse_class_instance, colormap):
+        """
+        TEMP CODE REMOVE LATER
+        """
+        self.grid_canvas.delete("all")
+        # Run next generation as long as changes appear
+        grid_entropies, finished = wavefunctioncollapse_class_instance.next_generation()
+        for y_index, x_row in enumerate(grid_entropies):
+            for x_index, cell_value in enumerate(x_row):
+                if cell_value is None:
+                    grid_entropies[y_index][x_index] = colormap[wavefunctioncollapse_class_instance.grid[y_index][x_index][0]]
+        self.set_values(grid_entropies)
+        if not finished:
+            self.after(10, lambda: self.display_collapse(wavefunctioncollapse_class_instance, colormap))
+
     def draw_element(self, x, y, draw_object=None):
         factor = App.grid_canvas_size/max(self.grid_x, self.grid_y)
 

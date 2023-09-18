@@ -2,20 +2,21 @@ import random
 from copy import deepcopy
 import math
 import time
-from typing import List
+from typing import List, Dict, Tuple, Union
 
 
 class WaveFunctionCollapse:
-    def __init__(self, width, height):
+    def __init__(self, width, height, tiles: Union[List, Tuple], tile_neighbors: Dict[int, List],
+                 tile_weights: Dict[int, int]):
         # Grid
         self.width = width
         self.height = height
         self.grid = []
 
         # Tile infos
-        self.tiles = (1, 2, 3, 4)
-        self.tile_neighbors = {1: [1, 2], 2: [1, 2, 3], 3: [2, 3, 4], 4: [3, 4]}
-        self.tile_weights = {1: 10, 2: 20, 3: 10}
+        self.tiles = tiles  # Example: (1, 2, 3, 4)
+        self.tile_neighbors = tile_neighbors  # Example: {1: [1, 2], 2: [1, 2, 3], 3: [2, 3, 4], 4: [3, 4]}
+        self.tile_weights = tile_weights  # Example: {1: 10, 2: 20, 3: 10, 4: 5}
 
         # Init functions
         self.create_grid()
@@ -68,19 +69,20 @@ class WaveFunctionCollapse:
         Facilitates one generation of the wave function collapse including the following steps:
             1. Collapse cell with lowest entropy.
             2. Update whole grid based on new neighbor states.
-        :return: Boolean if whole generation is finished (All states are collapsed)
+        :return: Array of grid entropies; Boolean if whole generation is finished (All states are collapsed)
         """
 
         # Get cell with lowest entropy
-        _, cell_coords = self.get_lowest_entropy_cell()
+        grid_entropies, cell_coords = self.get_lowest_entropy_cell()
 
         # End run and return is finished if no cell to collapse could be found
         if cell_coords is None:
-            return True
+            return grid_entropies, True
 
         # Else if cell cound be found, collapse it
         x_index, y_index = cell_coords
-        self.grid[y_index][x_index] = [random.choice(self.grid[y_index][x_index])]
+        cell_weights = [self.tile_weights[tile] for tile in self.grid[y_index][x_index]]
+        self.grid[y_index][x_index] = random.choices(self.grid[y_index][x_index], weights=cell_weights)
 
         # Loop over grid updates as long as changes appear
         changes_count = 1
@@ -88,7 +90,7 @@ class WaveFunctionCollapse:
             changes_count = self.update_grid()
 
         # Return that run is not finished
-        return False
+        return grid_entropies, False
 
     def update_grid(self):
         """
@@ -172,7 +174,7 @@ class WaveFunctionCollapse:
 
         # Run next generation as long as changes appear
         while not finished:
-            finished = self.next_generation()
+            grid_entropies, finished = self.next_generation()
             generation += 1
             if print_generations:
                 print(f"Generation {generation}:\n{self}")
@@ -191,5 +193,8 @@ class WaveFunctionCollapse:
 
 
 if __name__ == '__main__':
-    w = WaveFunctionCollapse(16, 9)
+    tiles = (1, 2, 3, 4)
+    tile_neighbors = {1: [1, 2], 2: [1, 2, 3], 3: [2, 3, 4], 4: [3, 4]}
+    tile_weights = {1: 30, 2: 25, 3: 25, 4: 30}
+    w = WaveFunctionCollapse(16, 9, tiles, tile_neighbors, tile_weights)
     w.collapse()
