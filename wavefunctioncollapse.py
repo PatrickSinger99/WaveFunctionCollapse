@@ -108,13 +108,13 @@ class WaveFunctionCollapse:
 
                     # Aggregate all values that need to be removed from the possible states of the cell
                     to_remove = []
-                    neighbor_values = self.grid[y_neighbor][x_neighbor]
+                    neighbor_vals = self.grid[y_neighbor][x_neighbor]
 
                     # Check for every possible cell value, if it can be placed besides all possible neighbor cells
                     for cell_value in self.grid[y_index][x_index]:
-                        possible_neighbors_of_neighbor = set(sum([self.tile_neighbors[val] for val in neighbor_values], []))
+                        valid_neighbors_of_neighbor = set(sum([self.tile_neighbors[val] for val in neighbor_vals], []))
 
-                        if cell_value not in possible_neighbors_of_neighbor:
+                        if cell_value not in valid_neighbors_of_neighbor:
                             to_remove.append(cell_value)
 
                     # Remove all impossible states for current cell
@@ -193,8 +193,8 @@ class WaveFunctionCollapse:
 
 
 if __name__ == '__main__':
-    tiles = (1, 2, 3, 4)
-    tile_neighbors = {1: [1, 2], 2: [1, 2, 3], 3: [2, 3, 4], 4: [3, 4]}
-    tile_weights = {1: 30, 2: 25, 3: 25, 4: 30}
-    w = WaveFunctionCollapse(16, 9, tiles, tile_neighbors, tile_weights)
+    ex_tiles = (1, 2, 3, 4)
+    ex_tile_neighbors = {1: [1, 2], 2: [1, 2, 3], 3: [2, 3, 4], 4: [3, 4]}
+    ex_tile_weights = {1: 30, 2: 25, 3: 25, 4: 30}
+    w = WaveFunctionCollapse(16, 9, ex_tiles, ex_tile_neighbors, ex_tile_weights)
     w.collapse()
