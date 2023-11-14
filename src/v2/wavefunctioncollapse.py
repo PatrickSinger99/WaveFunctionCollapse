@@ -3,9 +3,11 @@ from copy import deepcopy
 import math
 import time
 from typing import List, Dict, Tuple, Union
+import numpy as np
 
 
 class WaveFunctionCollapse:
+
     def __init__(self, width, height, tiles: Union[List, Tuple], tile_neighbors: Dict[int, List],
                  tile_weights: Dict[int, int]):
         # Grid
@@ -189,6 +191,7 @@ class WaveFunctionCollapse:
         for y_index, x_row in enumerate(return_grid):
             for x_index in range(len(x_row)):
                 return_grid[y_index][x_index] = return_grid[y_index][x_index][0]
+
         return return_grid
 
 
@@ -196,5 +199,5 @@ if __name__ == '__main__':
     ex_tiles = (1, 2, 3, 4)
     ex_tile_neighbors = {1: [1, 2], 2: [1, 2, 3], 3: [2, 3, 4], 4: [3, 4]}
     ex_tile_weights = {1: 30, 2: 25, 3: 25, 4: 30}
-    w = WaveFunctionCollapse(32, 32, ex_tiles, ex_tile_neighbors, ex_tile_weights)
+    w = WaveFunctionCollapse(20, 20, ex_tiles, ex_tile_neighbors, ex_tile_weights)
     w.collapse()

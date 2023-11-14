@@ -4,6 +4,7 @@ import random
 from PIL import Image, ImageTk
 from tile_widget import TileWidget
 
+
 class App(tk.Tk):
     window_width = 600
     window_height = 400
@@ -13,8 +14,8 @@ class App(tk.Tk):
 
         # Window Parameters
         self.title("Wave Function Collapse")
-        self.minsize(650, 400)
-        self.geometry("900x600")
+        self.minsize(800, 400)
+        self.geometry("1200x700")
         self.columnconfigure(1, weight=1)  # Set column 2 to scale with resizing window
         self.rowconfigure(1, weight=1)  # Set row 2 to scale with resizing window
 
@@ -29,7 +30,7 @@ class App(tk.Tk):
         self.header_frame.pack_propagate(False)
 
         # FRAME: Parameters
-        self.parameter_frame = tk.Frame(self, bg="light grey", width=300)
+        self.parameter_frame = tk.Frame(self, bg="light grey", width=400)
         self.parameter_frame.grid(row=1, column=0, rowspan=2, sticky="NS")
         self.parameter_frame.pack_propagate(False)
 
@@ -158,4 +159,5 @@ class App(tk.Tk):
 
 if __name__ == '__main__':
     app = App()
+
     app.mainloop()

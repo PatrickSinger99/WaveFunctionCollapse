@@ -3,6 +3,7 @@ from tkinter import colorchooser
 from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk
 
+
 class TileWidget(tk.Frame):
     tile_id_counter = 0
 
@@ -24,6 +25,7 @@ class TileWidget(tk.Frame):
 
         self.tile_name = tile_name
         self.tile_appearance = TileWidget.default_color
+        self.temp_other_tile_colors = {}  # Temporarily store colors for neighbor selection screen
 
         # FRAME: Tile Header
         self.tile_header_frame = tk.Frame(self, height=20, width=self.cget("width"), bg="grey")
@@ -86,16 +88,20 @@ class TileWidget(tk.Frame):
 
     def add_neighbor(self):
         current_tile_states = self.master_root.get_current_tile_states()
-
+        self.temp_other_tile_colors = {}  # Reset temporary tile colors
         toplevel_selection = tk.Toplevel()
+
+        tk.Label(toplevel_selection, text="Select possible neighbors:").pack(side="top")
+        tile_selection_frame = tk.Frame(toplevel_selection)
+        tile_selection_frame.pack(side="bottom")
 
         for tile_id in current_tile_states:
             # Create image based on color or img file
-            pil_img = Image.new(mode="RGB", size=(200, 200), color=self.hex_to_rgb(current_tile_states[tile_id]["color"]))
-            tile_img = ImageTk.PhotoImage(pil_img)
+            pil_img = Image.new(mode="RGB", size=(50, 50), color=self.hex_to_rgb(current_tile_states[tile_id]["color"]))
+            self.temp_other_tile_colors[tile_id] = ImageTk.PhotoImage(pil_img)
 
-            new_button = tk.Button(toplevel_selection, image=tile_img)
-            new_button.pack()
+            new_button = tk.Button(tile_selection_frame, image=self.temp_other_tile_colors[tile_id])
+            new_button.pack(side="right")
 
     @staticmethod
     def hex_to_rgb(value):
